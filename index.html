@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Love Monitor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #ff6b6b, #ff9ff3, #feca57);
+            font-family: 'Comic Neue', cursive;
+            overflow: hidden;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        .love-monitor {
+            background: #fff;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 95%;
+            width: 360px;
+            min-height: 400px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        .heart {
+            width: 90px;
+            height: 90px;
+            background: #ff4d4d;
+            position: relative;
+            margin: 40px auto 30px;
+            transform: rotate(-45deg);
+            animation: pulse 1.5s ease-in-out infinite;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .heart:hover {
+            background: #e63939;
+        }
+        .heart:hover::before,
+        .heart:hover::after {
+            background: #e63939;
+        }
+        .heart:active {
+            transform: rotate(-45deg) scale(0.95);
+        }
+        .heart::before,
+        .heart::after {
+            content: '';
+            width: 90px;
+            height: 90px;
+            background: #ff4d4d;
+            border-radius: 50%;
+            position: absolute;
+        }
+        .heart::before {
+            top: -45px;
+            left: 0;
+        }
+        .heart::after {
+            left: 45px;
+            top: 0;
+        }
+        .sparkle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ffd700;
+            border-radius: 50%;
+            opacity: 0.7;
+            animation: sparkle 2s infinite;
+        }
+        .sparkle:nth-child(1) { top: 20%; left: 15%; animation-delay: 0s; }
+        .sparkle:nth-child(2) { top: 30%; left: 80%; animation-delay: 0.5s; }
+        .sparkle:nth-child(3) { top: 60%; left: 20%; animation-delay: 1s; }
+        .sparkle:nth-child(4) { top: 50%; left: 75%; animation-delay: 1.5s; }
+        @keyframes pulse {
+            0% { transform: rotate(-45deg) scale(1); }
+            50% { transform: rotate(-45deg) scale(1.15); }
+            100% { transform: rotate(-45deg) scale(1); }
+        }
+        @keyframes sparkle {
+            0% { transform: scale(0); opacity: 0.7; }
+            50% { transform: scale(1.5); opacity: 0.3; }
+            100% { transform: scale(0); opacity: 0.7; }
+        }
+        button {
+            background: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-family: 'Comic Neue', cursive;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        button:active {
+            transform: scale(0.95);
+        }
+        button:hover {
+            background: #e63939;
+        }
+        #result {
+            margin-top: 15px;
+            font-size: 18px;
+            color: #ff4d4d;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease-in-out;
+        }
+        #pickup-line {
+            margin-top: 10px;
+            font-size: 16px;
+            color: #e91e63;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease-in-out 0.2s;
+        }
+        #result.show, #pickup-line.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .burst-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+        }
+        .burst-heart, .burst-sparkle {
+            position: absolute;
+            opacity: 0;
+            animation: burst 1.5s ease-out forwards;
+        }
+        .burst-heart {
+            width: 20px;
+            height: 20px;
+            background: #ff4d4d;
+            transform: rotate(-45deg);
+        }
+        .burst-heart::before,
+        .burst-heart::after {
+            content: '';
+            width: 20px;
+            height: 20px;
+            background: #ff4d4d;
+            border-radius: 50%;
+            position: absolute;
+        }
+        .burst-heart::before {
+            top: -10px;
+            left: 0;
+        }
+        .burst-heart::after {
+            left: 10px;
+            top: 0;
+        }
+        .burst-sparkle {
+            width: 8px;
+            height: 8px;
+            background: #ffd700;
+            border-radius: 50%;
+        }
+        @keyframes burst {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--tx), var(--ty)) scale(2);
+            }
+        }
+        @media (max-width: 600px) {
+            .love-monitor {
+                width: 90%;
+                padding: 20px;
+                min-height: 360px;
+            }
+            .heart {
+                width: 70px;
+                height: 70px;
+                margin: 30px auto 20px;
+            }
+            .heart::before,
+            .heart::after {
+                width: 70px;
+                height: 70px;
+            }
+            .heart::before {
+                top: -35px;
+            }
+            .heart::after {
+                left: 35px;
+            }
+            button {
+                font-size: 14px;
+                padding: 10px 20px;
+            }
+            #result {
+                font-size: 16px;
+            }
+            #pickup-line {
+                font-size: 14px;
+            }
+            .sparkle {
+                width: 8px;
+                height: 8px;
+            }
+            .burst-heart {
+                width: 15px;
+                height: 15px;
+            }
+            .burst-heart::before,
+            .burst-heart::after {
+                width: 15px;
+                height: 15px;
+            }
+            .burst-heart::before {
+                top: -7.5px;
+            }
+            .burst-heart::after {
+                left: 7.5px;
+            }
+            .burst-sparkle {
+                width: 6px;
+                height: 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="love-monitor">
+        <h2>Love Monitor 💖</h2>
+        <div class="heart" onclick="showLove()">
+            <div class="sparkle"></div>
+            <div class="sparkle"></div>
+            <div class="sparkle"></div>
+            <div class="sparkle"></div>
+        </div>
+        <button onclick="showLove()">Check Your Love Level</button>
+        <div id="result"></div>
+        <div id="pickup-line"></div>
+    </div>
+    <div class="burst-container" id="burst"></div>
+    <script>
+        const pickupLines = [
+            "Aastha, is your heart a magnet? Because it’s pulling me closer to you! 🧲",
+            "Aastha, are you a shooting star? Because my heart makes a wish for you every time! 🌠",
+            "Aastha, is your smile a sparkler? Because it lights up my whole world! 🎇",
+            "Aastha, are you a flower? Because my heart blooms when you’re around! 🌸",
+            "Aastha, is your name a spell? Because I’m enchanted by you every day! ✨"
+        ];
+
+        function showLove() {
+            const result = document.getElementById('result');
+            const pickupLine = document.getElementById('pickup-line');
+            result.textContent = 'You are 1000% in love with Sagar!';
+            pickupLine.textContent = pickupLines[Math.floor(Math.random() * pickupLines.length)];
+            result.classList.add('show');
+            pickupLine.classList.add('show');
+            triggerBurst();
+            setTimeout(() => {
+                result.classList.remove('show');
+                pickupLine.classList.remove('show');
+                setTimeout(() => {
+                    result.textContent = '';
+                    pickupLine.textContent = '';
+                }, 500);
+            }, 7000); // Extended to 7 seconds
+        }
+
+        function triggerBurst() {
+            const burstContainer = document.getElementById('burst');
+            burstContainer.innerHTML = ''; // Clear previous burst
+            const count = 20; // Number of hearts and sparkles
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+            for (let i = 0; i < count; i++) {
+                const element = document.createElement('div');
+                const isHeart = Math.random() > 0.5; // Randomly choose heart or sparkle
+                element.className = isHeart ? 'burst-heart' : 'burst-sparkle';
+                const angle = Math.random() * 2 * Math.PI;
+                const distance = 100 + Math.random() * 200; // Spread 100-300px
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance;
+                element.style.left = `${centerX}px`;
+                element.style.top = `${centerY}px`;
+                element.style.setProperty('--tx', `${tx}px`);
+                element.style.setProperty('--ty', `${ty}px`);
+                element.style.animationDelay = `${Math.random() * 0.5}s`; // Staggered start
+                burstContainer.appendChild(element);
+            }
+            setTimeout(() => {
+                burstContainer.innerHTML = '';
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
